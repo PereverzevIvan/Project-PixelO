@@ -1,0 +1,76 @@
+<!--Шаблон, расширяющий базовый, страницы добавления товара-->
+{% extends "base.html" %}
+
+{% block title %}
+Добавление товара
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container">
+    {% if message %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+    {% if message_corr %}
+    <div class="alert alert-success">{{ message_corr }}</div>
+    {% endif %}
+    <div class="container" style="background-color: white; border-radius: 10px; padding: 10px">
+        <h1>Добавление товара</h1>
+        <form action="" method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <span>
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control", type="string") }}<br>
+            {% for error in form.name.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+            <span>
+            {{ form.price.label }}<br>
+            {{ form.price(class="form-control", type="string") }}<br>
+            {% for error in form.price.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+            <span>
+            {{ form.category.label }}<br>
+            {{ form.category(class="form-select", type="category") }}<br>
+            {% for error in form.category.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+            <span>
+            {{ form.brand.label }}<br>
+            {{ form.brand(class="form-control", type="brand") }}<br>
+            {% for error in form.brand.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+            {% if form.get_len_params() > 0 %}
+            <h6>Характеристики товара</h6>
+            <span>
+            {% for parameter in form.parameters %}
+            {{ form.chars[loop.index - 1] }}
+            {{ parameter(class="form-control", type="string") }}<br>
+            {% endfor %}
+        </span>
+            {% endif %}
+            <span>
+            {{ form.image.label }}<br>
+            {{ form.image(class="form-control") }}<br>
+        </span>
+            <br>
+            <span>{{ form.submit(type="submit", class="btn btn-dark") }}</span>
+        </form>
+    </div>
+</div>
+<br><br>
+{% endblock %}

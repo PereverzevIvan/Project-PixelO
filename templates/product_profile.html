@@ -1,0 +1,134 @@
+<!--Шаблон, расширяющий базовый, страницы профиля товара-->
+{% extends "base.html" %}
+
+{% block title %}
+{{ product.name }}
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="cont" style="max-width: 1300px; margin-left: auto; margin-right: auto" id="main_cont">
+    {% if message_corr %}
+    <div class="alert alert-success" role="alert">
+        {{ message_corr }}
+    </div>
+    {% endif %}
+    {% if message_error %}
+    <div class="alert alert-danger" role="alert">
+        {{ message_error }}
+    </div>
+    {% endif %}
+    <div class="top" style="background-color: white; border-radius: 10px; padding: 10px" id="cont">
+        <div id="avatar" style="display: inline-block">
+            <img src="{{ url_for('static', filename=product.image_path) }}" title="image"
+                 style="width: 206px; height: 162px"
+                 onload="getMarginForProduct('cont', 'basket_and_buy', 'name');
+                        getHeight('main_cont', 'left_cont', 'right_cont')">
+        </div>
+        <div id="name" style="display: inline-block; padding: 5px">
+            <h3>{{ product.name }}</h3>
+            {% if score_average %}
+            <h2>
+                <span style="color: Gold; font-size: 35px">★</span> {{score_average}}
+            </h2>
+            {% endif %}
+        </div>
+        <div id="basket_and_buy" style="display: inline-block; float: right">
+            <h2>{{ product.price }} ₽</h2>
+            <button class="btn btn-dark">
+                <a href="/add_product_in_basket/{{product.id}}" style="text-decoration: none; color: white">
+                    <img src="{{ url_for('static', filename='img/корзина.png') }}"
+                         style="width: 20px; height: 20px">
+                    В корзину
+                </a>
+            </button>
+            <button class="btn btn-dark">
+                <a href="/buy_product" style="text-decoration: none; color: white">
+                    <img src="{{ url_for('static', filename='img/shop.png') }}"
+                         style="width: 20px; height: 20px">
+                    Купить
+                </a>
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="left" style="width: 645px; background-color: white; float: left; border-radius: 10px; padding: 10px"
+         id="left_cont">
+        <h2 style="display: inline-block">Отзывы</h2><br>
+        {% if not current_user.is_anonymous %}
+        <button class="btn btn-dark" id="add_comment" data-bs-toggle="modal" data-bs-target="#commentForm">
+            Оставить отзыв
+        </button>
+        {% endif %}
+        <br><br>
+        {% for new in news %}
+        <div class="dividing_line"></div>
+        <br>
+        <div style="background-color: PaleTurquoise; border-radius: 10px; padding: 10px">
+            {% for i in range(new.score) %}
+            <h1 style="display: inline-block; color: Gold">★</h1>
+            {% endfor %}
+            {% if new.score < 5 %}
+            {% for i in range(5 - new.score) %}
+            <h1 style="display: inline-block; color: gray">★</h1>
+            {% endfor %}
+            {% endif %}
+            <h3>{{ new.title }}</h3>
+            <h5>{{ new.content }}</h5>
+            <h5 style="float: right">пишет <a href="/user_profile/{{new.user_id}}">{{ new.user_name }}</a></h5>
+            <br>
+            {% if current_user.id == new.user_id or current_user.id == 1 %}
+            <button class="btn btn-dark" id="delete_comment">
+                <a href="/to_do_news/delete/{{new.id}}/{{product.id}}" style="text-decoration: none; color: white">
+                      Удалить
+                </a>
+            </button>
+            {% endif %}
+        </div>
+        <br>
+        {% endfor %}
+    </div>
+    <div class="right" style="width: 645px; background-color: white; float: right; border-radius: 10px; padding: 10px"
+         id="right_cont">
+        <h2 style="">Характеристики товара</h2><br>
+        <div>
+            {% for i in params %}
+            <h4>{{ i[0] }}: {{ i[1] }}</h4>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<br>
+<div class="modal fade" id="commentForm" aria-hidden="False" tabindex="-1" aria-labelledby="commentFormLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="commentFormLabel">Добавление отзыва</h4>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    <div class="container">
+                        {{ form.csrf_token }}
+                        {{ form.score.label }}
+                        <br>
+                        {% for radio in form.score %}
+                        {{ radio(class="form-check-input") }}
+                        <label>{{ loop.index }}</label>
+                        {% endfor %}
+                        <br>
+                        {{ form.title.label }}<br>
+                        {{ form.title(class="form-control") }}
+                        <br>
+                        {{ form.content.label }}<br>
+                        {{ form.content(class="form-control", rows="4") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {{ form.submit(class="btn btn-dark") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

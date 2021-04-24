@@ -1,0 +1,16 @@
+<!--Шаблон, расширяющий базовый, страницы покупки товара-->
+{% extends "base.html" %}
+
+{% block title %}
+Покупка
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 10px">
+    <h1 align="center">Error</h1>
+    {% if message %}
+    <h2 align="center">{{ message }}</h2>
+    {% endif %}
+</div>
+{% endblock %}

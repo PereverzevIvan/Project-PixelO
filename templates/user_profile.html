@@ -1,0 +1,145 @@
+<!--Шаблон, расширяющий базовый, страницы профиля пользователя-->
+{% extends "base.html" %}
+
+{% block title %}
+Профиль
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="cont" style="max-width: 1300px; margin-left: auto; margin-right: auto" id="main_cont">
+    {% if user.id == current_user.id %}
+    {% set flag = 1 %}
+    {% else %}
+    {% set flag = 0 %}
+    {% endif %}
+    {% if message_corr %}
+    <div class="alert alert-success" role="alert">
+        {{ message_corr }}
+    </div>
+    {% endif %}
+    {% if message_error %}
+    <div class="alert alert-danger" role="alert">
+        {{ message_error }}
+    </div>
+    {% endif %}
+    <div class="top" style="background-color: white; border-radius: 10px; padding: 10px">
+        <div id="avatar" style="display: inline-block">
+            <img src="{{ url_for('static', filename=user.avatar_path) }}" title="avatar"
+                 style="width: 150px; height: 150px"
+                 onload="getWidth({{ flag }}); getHeight('main_cont', 'left_cont', 'right_cont');
+                        getHeightForComments({{ news.__len__() }})">
+        </div>
+        <div id="name_role" style="display: inline-block; padding: 5px">
+            <h3>{{ user.name }}</h3>
+            {% if user.role == 'admin' %}
+            <h5>Администратор</h5>
+            {% else %}
+            <h5>Пользователь</h5>
+            {% endif %}
+        </div>
+        {% if user.id == current_user.id %}
+        <div id="settings_basket" style="display: inline-block">
+            <button class="btn btn-dark" id="basket_btn" data-bs-toggle="modal" data-bs-target="#basketModal">
+                <img src="{{ url_for('static', filename='img/корзина.png') }}"
+                     style="width: 20px; height: 20px">
+                Корзина
+            </button>
+            <button class="btn btn-dark">
+                <a href="/edit_user_profile/{{current_user.id}}" style="text-decoration: none; color: white">
+                    <img src="{{ url_for('static', filename='img/settings.png') }}"
+                         style="width: 20px; height: 20px">
+                    Настройки
+                </a>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    <div class="left" style="width: 645px; background-color: white; float: left; border-radius: 10px; padding: 10px"
+         id="left_cont">
+        <h2>Комментарии</h2>
+        {% for new in news %}
+        <div class="dividing_line"></div>
+        <br>
+        <div style="background-color: PaleTurquoise; border-radius: 10px; padding: 10px" id="div-{{ loop.index }}">
+            {% for i in range(new.score) %}
+            <h1 style="display: inline-block; color: yellow">★</h1>
+            {% endfor %}
+            {% if new.score < 5 %}
+            {% for i in range(5 - new.score) %}
+            <h1 style="display: inline-block; color: gray">★</h1>
+            {% endfor %}
+            {% endif %}
+            <h3>{{ new.title }}</h3>
+            <h5>{{ new.content }}</h5>
+            {% if user.id == current_user.id %}
+            {% set text = 'пишите вы о' %}
+            {% else %}
+            {% set text = 'пишет о' %}
+            {% endif %}
+            <h5 style="float: right" id="h5-{{ loop.index }}">{{ text }} <a href="/product_profile/{{new.product_id}}">
+                {{ new.product_name }}
+            </a>
+            </h5>
+            <br>
+        </div>
+        <br>
+        {% endfor %}
+    </div>
+    <div class="right" style="width: 645px; background-color: white; float: right; border-radius: 10px; padding: 10px"
+         id="right_cont">
+        <h2 style="">Общая информация</h2>
+        <div>
+            <h4>Имя на сервере: {{ user.name }}</h4>
+            <h4>Адрес эл. почты: {{ user.email }}</h4>
+            <h4>Дата регистрации: {{ user.modified_date }}</h4>
+        </div>
+    </div>
+</div>
+<br>
+<div class="modal fade" id="basketModal" aria-hidden="False" tabindex="-1" aria-labelledby="commentFormLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="commentFormLabel">Корзина товаров</h4>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+            <div class="modal-body">
+                {% if current_user.len_basket == 0 %}
+                <h2>Ваша корзина пуста</h2>
+                {% else %}
+                {% for product in basket %}
+                {% if not loop.first %}
+                <div class="dividing_line"></div>
+                {% endif %}
+                <br>
+                <div class="container">
+                    <img src="{{ url_for('static', filename=product.image_path) }}" style="width: 96px; height: 63px">
+                    <h4>{{ product.name }}</h4>
+                    <h4>{{ product.price }} ₽</h4>
+                    <button class="btn btn-dark">
+                        <a href="/delete_product_from_basket/{{current_user.id}}/{{product.id}}"
+                           style="text-decoration: none; color: white">
+                            Удалить из корзины
+                        </a>
+                    </button>
+                </div>
+                <br>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <h3 align="left">Итог: {{ finish_price }} ₽</h3>
+                <button class="btn btn-dark">
+                    <a href="/buy_product" style="text-decoration: none; color: white">
+                        <img src="{{ url_for('static', filename='img/shop.png') }}"
+                             style="width: 20px; height: 20px">
+                        Купить
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

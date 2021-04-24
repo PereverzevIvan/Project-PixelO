@@ -1,0 +1,18 @@
+<!--Шаблон, расширяющий базовый, страницы "Ничего не найдено"-->
+{% extends "base.html" %}
+
+{% block title %}
+Страница не найдена
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 10px">
+    <h1 align="center">Error 404</h1>
+    {% if message %}
+    {% for mes in message %}
+    <h2 align="center">{{ mes }}</h2>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

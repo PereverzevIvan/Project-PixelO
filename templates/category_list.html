@@ -1,0 +1,22 @@
+<!--Шаблон, расширяющий базовый, страницы всех категорий-->
+{% extends "base.html" %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 10px" id="cont">
+    {% for category in categories %}
+        {% if loop.index % 6 == 0 %}
+            <div style="height: 40px"></div>
+        {% endif %}
+    <div style="display: inline-block; width: 35px"></div>
+    <div style="display: inline-block; max-width: 208px; max-height: 180px" id="{{ loop.index }}">
+        <img src="{{ url_for('static', filename=category.image_path) }}" style="width: 208px; height: 171px">
+        <a href="/products_in_category/{{category.id}}" style="color: black; text-decoration: none"><h4 align="center">{{category.name}}</h4></a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

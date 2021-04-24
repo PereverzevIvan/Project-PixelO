@@ -1,0 +1,33 @@
+<!--Шаблон, расширяющий базовый, страницы всех товаров в выбранной категории-->
+{% extends "base.html" %}
+
+{% block title %}
+Все категории
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 10px" id="cont-main">
+    {% for product in products %}
+    {% set ind = loop.index %}
+    <div class="container" id="cont_{{ind}}" style="padding: 10px">
+        <img src="{{ url_for('static', filename=product.image_path) }}" style="width: 200px; height: 162px"
+             id="image_{{ind}}"
+             onload="getMarginForProduct('cont_{{ind}}', 'button_{{ind}}', 'name_{{ind}}')">
+        <div class="empty_zone"></div>
+        <h4 id="name_{{ind}}" style="display: inline-block; max-width: 600px">{{product.name}}</h4>
+        <div class="empty_zone"></div>
+        <button class="btn btn-dark" style="display: inline-block; font-size: 25px; float: right"
+                id="button_{{ind}}">
+            <a href="/product_profile/{{ product.id }}" style="text-decoration: none; color: white">
+                {{product.price}} ₽
+            </a>
+        </button>
+    </div>
+    {% if not loop.last %}
+    <div class="dividing_line"></div>
+    {% endif %}
+    {% endfor %}
+</div>
+<br>
+{% endblock %}

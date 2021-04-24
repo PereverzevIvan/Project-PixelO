@@ -1,0 +1,61 @@
+<!--Шаблон, расширяющий базовый, страницы регистрации пользователей-->
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+{% block content %}
+<br>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 10px">
+    <h1>{{ title }}</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <span>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email") }}<br>
+            {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+        <span>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password") }}<br>
+            {% for error in form.password.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+        <span>
+            {{ form.password_again.label }}<br>
+            {{ form.password_again(class="form-control", type="password") }}<br>
+            {% for error in form.password_again.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+        <span>
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control", type="name") }}<br>
+            {% for error in form.name.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </span>
+        <span>
+            {{ form.image.label }}<br>
+            {{ form.image(class="form-control") }}<br>
+        </span>
+        <br>
+        <span>{{ form.submit(type="submit", class="btn btn-dark") }}</span>
+        {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+    </form>
+</div>
+<br><br>
+{% endblock %}
